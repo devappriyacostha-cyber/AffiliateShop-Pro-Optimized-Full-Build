@@ -25,7 +25,19 @@ export default async function AdminBannersPage() {
       </div>
       <div className="bg-gray-50 p-6 rounded-3xl border border-dashed border-gray-300">
         <h2 className="font-bold mb-4 text-gray-700">Add New Banner</h2>
-        <form action={upsertBanner} className="grid gap-4">
+        <form 
+          action={async (formData: FormData) => {
+            "use server";
+            const data = {
+              title: formData.get("title") as string,
+              subtitle: formData.get("subtitle") as string,
+              imageUrl: formData.get("imageUrl") as string,
+              buttonUrl: formData.get("buttonUrl") as string,
+            };
+            await upsertBanner(data);
+          }} 
+          className="grid gap-4"
+        >
           <input name="title" placeholder="Banner Title" className="p-3 bg-white border rounded-xl outline-none focus:ring-2 focus:ring-orange-500" required />
           <input name="subtitle" placeholder="Subtitle" className="p-3 bg-white border rounded-xl outline-none focus:ring-2 focus:ring-orange-500" />
           <input name="imageUrl" placeholder="Image URL" className="p-3 bg-white border rounded-xl outline-none focus:ring-2 focus:ring-orange-500" required />
