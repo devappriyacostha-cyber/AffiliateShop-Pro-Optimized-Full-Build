@@ -26,8 +26,17 @@ export default async function AdminCategoriesPage() {
       </div>
       <div className="p-8 bg-blue-50 rounded-3xl border border-blue-100">
         <h2 className="font-bold mb-4 text-blue-900">Add New Category</h2>
-        <form action={upsertCategory} className="flex flex-col gap-4">
-          <input name="name" placeholder="Category Name" className="p-3 bg-white border-none rounded-2xl shadow-sm" required />
+        <form 
+          action={async (formData: FormData) => {
+            "use server";
+            const data = {
+              name: formData.get("name") as string,
+            };
+            await upsertCategory(data);
+          }} 
+          className="flex flex-col gap-4"
+        >
+          <input name="name" placeholder="Category Name" className="p-3 bg-white border-none rounded-2xl shadow-sm outline-none focus:ring-2 focus:ring-blue-500" required />
           <button type="submit" className="bg-blue-600 text-white font-bold py-4 rounded-2xl hover:bg-blue-700 shadow-lg transition-all">Create Category</button>
         </form>
       </div>
