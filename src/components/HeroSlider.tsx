@@ -7,7 +7,6 @@ import React, {
 
 import Image from "next/image";
 
-
 interface Banner {
   id: number;
   imageUrl: string;
@@ -17,58 +16,44 @@ interface Banner {
   buttonUrl?: string | null;
 }
 
-
 interface HeroSliderProps {
   banners: Banner[];
   siteName?: string;
   tagline?: string;
 }
 
-
 export default function HeroSlider({
   banners,
   siteName = "AffiliateShop.lk",
   tagline = "{tagline}",
 }: HeroSliderProps) {
-
   const [current, setCurrent] = useState(0);
-
 
   /* =========================================================
      AUTO SLIDE
      ========================================================= */
 
   useEffect(() => {
-
     if (banners.length <= 1) {
       return;
     }
 
-
     const interval = window.setInterval(() => {
-
       setCurrent((previous) => {
-
         return (previous + 1) % banners.length;
-
       });
-
     }, 6000);
-
 
     return () => {
       window.clearInterval(interval);
     };
-
   }, [banners.length]);
-
 
   /* =========================================================
      EMPTY BANNER
      ========================================================= */
 
   if (!banners || banners.length === 0) {
-
     return (
       <section
         className="
@@ -87,9 +72,7 @@ export default function HeroSlider({
           md:h-[500px]
         "
       >
-
         <div className="text-center">
-
           <h1
             className="
               text-3xl
@@ -105,20 +88,16 @@ export default function HeroSlider({
           <p className="mt-3 text-sm text-slate-500 md:text-base">
             {tagline}
           </p>
-
         </div>
-
       </section>
     );
   }
-
 
   /* =========================================================
      CURRENT BANNER
      ========================================================= */
 
   const banner = banners[current] || banners[0];
-
 
   return (
     <section
@@ -133,13 +112,11 @@ export default function HeroSlider({
         md:h-[500px]
       "
     >
-
       {/* =====================================================
           IMAGE
           ===================================================== */}
 
       {banners.map((item, index) => (
-
         <div
           key={item.id}
           className={`
@@ -156,7 +133,6 @@ export default function HeroSlider({
             }
           `}
         >
-
           <Image
             src={item.imageUrl}
             alt={
@@ -169,13 +145,11 @@ export default function HeroSlider({
             className="object-cover"
           />
 
-
           {/* =================================================
               DARK OVERLAY
               ================================================= */}
 
           {(item.title || item.subtitle) && (
-
             <div
               className="
                 absolute
@@ -186,16 +160,13 @@ export default function HeroSlider({
                 to-transparent
               "
             />
-
           )}
-
 
           {/* =================================================
               TEXT
               ================================================= */}
 
           {(item.title || item.subtitle) && (
-
             <div
               className="
                 absolute
@@ -214,9 +185,7 @@ export default function HeroSlider({
                 md:pb-20
               "
             >
-
               {item.title && (
-
                 <h1
                   className="
                     mb-3
@@ -230,12 +199,9 @@ export default function HeroSlider({
                 >
                   {item.title}
                 </h1>
-
               )}
 
-
               {item.subtitle && (
-
                 <p
                   className="
                     max-w-2xl
@@ -248,32 +214,27 @@ export default function HeroSlider({
                 >
                   {item.subtitle}
                 </p>
-
-              )}\n\n              {item.buttonText && item.buttonUrl && (\n                <a href={item.buttonUrl} className="mt-5 rounded-2xl bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-xl transition hover:bg-orange-600 hover:scale-105">\n                  {item.buttonText}\n                </a>\n              )}
+              )}
 
               {item.buttonText && item.buttonUrl && (
-                <a href={item.buttonUrl} className="mt-5 rounded-2xl bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-xl transition hover:bg-orange-600 hover:scale-105">
+                <a
+                  href={item.buttonUrl}
+                  className="mt-5 rounded-2xl bg-orange-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-xl transition hover:bg-orange-600 hover:scale-105"
+                >
                   {item.buttonText}
                 </a>
               )}
-
             </div>
-
           )}
-
         </div>
-
       ))}
-
 
       {/* =====================================================
           NAVIGATION BUTTONS
           ===================================================== */}
 
       {banners.length > 1 && (
-
         <>
-
           <button
             type="button"
             onClick={() =>
@@ -304,7 +265,6 @@ export default function HeroSlider({
             ‹
           </button>
 
-
           <button
             type="button"
             onClick={() =>
@@ -334,18 +294,14 @@ export default function HeroSlider({
           >
             ›
           </button>
-
         </>
-
       )}
-
 
       {/* =====================================================
           DOTS
           ===================================================== */}
 
       {banners.length > 1 && (
-
         <div
           className="
             absolute
@@ -358,9 +314,7 @@ export default function HeroSlider({
             gap-2
           "
         >
-
           {banners.map((item, index) => (
-
             <button
               key={item.id}
               type="button"
@@ -379,13 +333,9 @@ export default function HeroSlider({
                 }
               `}
             />
-
           ))}
-
         </div>
-
       )}
-
     </section>
   );
 }
