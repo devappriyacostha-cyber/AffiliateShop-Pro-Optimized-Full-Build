@@ -170,7 +170,7 @@ export default async function HomePage({
 
         {/* Filters */}
 
-        <div className="relative z-20 animate-fadeIn">
+        <div className="relative z-30 animate-fadeIn">
 
           <HomeFilters categories={activeCats} title={siteSettings.featuredTitle || "Featured Deals"} />
 
