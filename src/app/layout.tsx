@@ -26,6 +26,7 @@ const inter = Inter({
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
+
   const settings = await getSiteSettings();
 
   return {
@@ -70,9 +71,13 @@ export default async function RootLayout({
     getSiteSettings(),
   ]);
 
+  /*
+   * MAIN COLORS
+   */
+
   const primary =
     settings.primaryColor ||
-    "#2563eb";
+    "#f97316";
 
   const accent =
     settings.accentColor ||
@@ -81,6 +86,10 @@ export default async function RootLayout({
   const bg =
     settings.backgroundColor ||
     "#fafafa";
+
+  /*
+   * NEW SEPARATE UI COLORS
+   */
 
   const viewDeal =
     settings.viewDealColor ||
@@ -106,15 +115,19 @@ export default async function RootLayout({
     settings.footerActionColor ||
     "#2563eb";
 
-  const primaryButton =
-    settings.primaryButtonColor ||
+  const otherPrimary =
+    settings.otherPrimaryColor ||
     "#2563eb";
 
   const animation =
     settings.animation ||
     "smooth";
 
-  const themeStyles = {
+  /*
+   * CSS VARIABLES
+   */
+
+  const cssVariables = {
     "--primary": primary,
     "--accent": accent,
     "--site-bg": bg,
@@ -125,7 +138,7 @@ export default async function RootLayout({
     "--hover": hover,
     "--header-cta": headerCta,
     "--footer-action": footerAction,
-    "--primary-button": primaryButton,
+    "--other-primary": otherPrimary,
   } as CSSProperties;
 
   return (
@@ -133,9 +146,10 @@ export default async function RootLayout({
       lang="en"
       data-animation={animation}
     >
+
       <body
         className={`${inter.className} animated-bg min-h-screen flex flex-col antialiased`}
-        style={themeStyles}
+        style={cssVariables}
       >
 
         <SplashScreen
@@ -159,9 +173,11 @@ export default async function RootLayout({
           <Suspense
             fallback={
               <div className="flex min-h-[50vh] items-center justify-center p-20 text-center">
+
                 <div className="font-bold tracking-widest text-slate-400">
                   LOADING...
                 </div>
+
               </div>
             }
           >
@@ -179,6 +195,7 @@ export default async function RootLayout({
         />
 
       </body>
+
     </html>
   );
 }
