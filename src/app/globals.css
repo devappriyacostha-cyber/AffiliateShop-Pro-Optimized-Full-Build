@@ -24,6 +24,79 @@ body {
 }
 
 /* ============================
+   ADMIN FORM FIELDS
+   (used by Product / Category / Banner forms)
+   ============================ */
+
+.field-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.field {
+  display: block;
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.field:focus {
+  border-color: var(--other-primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--other-primary) 12%, transparent);
+}
+
+textarea.field {
+  resize: vertical;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.1rem;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toggle input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--other-primary);
+  cursor: pointer;
+}
+
+.toggle:has(input:checked) {
+  border-color: var(--other-primary);
+  background-color: color-mix(in srgb, var(--other-primary) 8%, white);
+  color: var(--other-primary);
+}
+
+/* ============================
    ADMIN SETTINGS PAGE
    ============================ */
 
