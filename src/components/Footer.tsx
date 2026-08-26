@@ -285,7 +285,7 @@ export default function Footer({
               },
             ].map((social) => (
 
-              
+              <a
                 key={social.label}
                 href={social.href}
                 target="_blank"
