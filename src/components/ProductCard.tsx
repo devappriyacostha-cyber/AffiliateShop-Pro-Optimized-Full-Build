@@ -55,7 +55,7 @@ export default function ProductCard({
   return (
     <article
       className="
-        group relative flex h-full flex-col
+        group relative z-0 flex h-full flex-col
         overflow-hidden rounded-[28px]
         border border-slate-200/80
         bg-white
