@@ -27,6 +27,9 @@ export default function ProductForm({ categories = [], initialData }: { categori
   const router = useRouter();
   const editing = Boolean(initialData);
   const [saving, setSaving] = useState(false);
+
+  const initialImages = (initialData?.imageUrls ?? []).slice(0, 4);
+
   const [form, setForm] = useState({
     name: initialData?.name ?? "",
     shortName: initialData?.shortName ?? "",
@@ -36,19 +39,34 @@ export default function ProductForm({ categories = [], initialData }: { categori
     price: initialData?.price ?? "",
     categoryId: initialData?.categoryId ? String(initialData.categoryId) : "",
     affiliateUrl: initialData?.affiliateUrl ?? "",
-    imageUrls: initialData?.imageUrls?.join("\n") ?? "",
     rating: initialData?.rating ?? "0",
     isFeatured: initialData?.isFeatured ?? false,
     isHot: initialData?.isHot ?? false,
   });
 
+  const [images, setImages] = useState<string[]>([
+    initialImages[0] ?? "",
+    initialImages[1] ?? "",
+    initialImages[2] ?? "",
+    initialImages[3] ?? "",
+  ]);
+
+  const setImage = (index: number, value: string) => {
+    setImages((current) => {
+      const next = [...current];
+      next[index] = value;
+      return next;
+    });
+  };
+
   const set = (key: string, value: string | boolean) => setForm((v) => ({ ...v, [key]: value }));
 
   async function submit(e: FormEvent) {
     e.preventDefault();
+    const imageUrls = images.map((url) => url.trim()).filter(Boolean).slice(0, 4);
     if (!form.name.trim() || !form.price || !form.affiliateUrl.trim()) return;
     setSaving(true);
-    const payload = { ...form, categoryId: form.categoryId || null };
+    const payload = { ...form, categoryId: form.categoryId || null, imageUrls: imageUrls.join("\n") };
     if (editing) await updateProduct(initialData!.id, payload);
     else await addProduct(payload);
     router.push("/admin");
@@ -92,7 +110,24 @@ export default function ProductForm({ categories = [], initialData }: { categori
           <div className="grid gap-5">
             <label><span className="field-label">Category</span><select value={form.categoryId} onChange={(e) => set("categoryId", e.target.value)} className="field"><option value="">No category</option>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
             <label><span className="field-label">Affiliate / product URL</span><div className="relative"><Link2 size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" /><input required value={form.affiliateUrl} onChange={(e) => set("affiliateUrl", e.target.value)} className="field pl-11" placeholder="https://..." /></div></label>
-            <label><span className="field-label">Image URLs — one per line</span><textarea value={form.imageUrls} onChange={(e) => set("imageUrls", e.target.value)} className="field min-h-32" placeholder="https://image-1.jpg&#10;https://image-2.jpg" /><span className="mt-2 flex items-center gap-2 text-xs text-slate-400"><ImageIcon size={14} /> First image is used as the main product image.</span></label>
+
+            <div>
+              <span className="field-label">Product images (max 4)</span>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {images.map((url, index) => (
+                  <div key={index} className="relative">
+                    <ImageIcon size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      value={url}
+                      onChange={(e) => setImage(index, e.target.value)}
+                      className="field pl-10"
+                      placeholder={index === 0 ? "https://image-1.jpg (main image)" : `https://image-${index + 1}.jpg`}
+                    />
+                  </div>
+                ))}
+              </div>
+              <span className="mt-2 flex items-center gap-2 text-xs text-slate-400"><ImageIcon size={14} /> First image is used as the main product image. Up to 4 images per product.</span>
+            </div>
           </div>
         </section>
 
