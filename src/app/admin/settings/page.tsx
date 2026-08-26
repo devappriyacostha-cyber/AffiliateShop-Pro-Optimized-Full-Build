@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Save, Palette, Globe2, Share2, Sparkles } from "lucide-react";
+import {
+  Save,
+  Palette,
+  Globe2,
+  Share2,
+  Sparkles,
+  MousePointer2,
+  SlidersHorizontal,
+} from "lucide-react";
 import { updateSettings } from "../actions";
 
 const defaults: Record<string, string> = {
@@ -13,17 +21,18 @@ const defaults: Record<string, string> = {
   youtubeUrl: "",
   instagramUrl: "",
 
-  primaryColor: "#2563eb",
+  primaryColor: "#f97316",
   accentColor: "#0f172a",
   backgroundColor: "#fafafa",
 
+  // NEW UI COLORS
   viewDealColor: "#2563eb",
   categorySelectedColor: "#2563eb",
   sortSelectedColor: "#2563eb",
   hoverColor: "#2563eb",
   headerCtaColor: "#2563eb",
   footerActionColor: "#2563eb",
-  primaryButtonColor: "#2563eb",
+  otherPrimaryColor: "#2563eb",
 
   animation: "smooth",
 
@@ -32,6 +41,50 @@ const defaults: Record<string, string> = {
   featuredTitle: "Featured Deals",
   searchPlaceholder: "Search products...",
 };
+
+type ColorItem = {
+  key: string;
+  label: string;
+  description: string;
+};
+
+const uiColors: ColorItem[] = [
+  {
+    key: "viewDealColor",
+    label: "View Deal",
+    description: "Product card View Deal button",
+  },
+  {
+    key: "categorySelectedColor",
+    label: "Category Selected",
+    description: "Selected category button",
+  },
+  {
+    key: "sortSelectedColor",
+    label: "Sort Selected",
+    description: "Selected sorting option",
+  },
+  {
+    key: "hoverColor",
+    label: "Hover",
+    description: "General hover effects",
+  },
+  {
+    key: "headerCtaColor",
+    label: "Header CTA",
+    description: "Header search and CTA buttons",
+  },
+  {
+    key: "footerActionColor",
+    label: "Footer / Action",
+    description: "Footer links and action buttons",
+  },
+  {
+    key: "otherPrimaryColor",
+    label: "Other Primary Buttons",
+    description: "Other important primary buttons",
+  },
+];
 
 export default function AdminSettings({
   initialSettings = {},
@@ -47,8 +100,8 @@ export default function AdminSettings({
   const [saved, setSaved] = useState(false);
 
   const set = (key: string, value: string) => {
-    setForm((v) => ({
-      ...v,
+    setForm((current) => ({
+      ...current,
       [key]: value,
     }));
   };
@@ -57,33 +110,26 @@ export default function AdminSettings({
     setSaving(true);
     setSaved(false);
 
-    await updateSettings(form);
+    try {
+      await updateSettings(form);
 
-    setSaving(false);
-    setSaved(true);
+      setSaved(true);
 
-    setTimeout(() => {
-      setSaved(false);
-    }, 2500);
+      setTimeout(() => {
+        setSaved(false);
+      }, 2500);
+    } finally {
+      setSaving(false);
+    }
   }
-
-  const colorSettings = [
-    ["viewDealColor", "View Deal Color"],
-    ["categorySelectedColor", "Category Selected Color"],
-    ["sortSelectedColor", "Sort Selected Color"],
-    ["hoverColor", "Hover Color"],
-    ["headerCtaColor", "Header CTA Color"],
-    ["footerActionColor", "Footer / Action Color"],
-    ["primaryButtonColor", "Other Primary Buttons"],
-  ];
 
   return (
     <div className="space-y-8">
 
-      {/* HEADER */}
+      {/* PAGE HEADER */}
       <div>
         <div className="flex items-center gap-3">
-          <Sparkles className="text-[var(--primary)]" />
+          <Sparkles className="settings-primary-icon" />
 
           <h1 className="text-3xl font-black tracking-tight text-slate-950">
             Site Settings
@@ -91,18 +137,18 @@ export default function AdminSettings({
         </div>
 
         <p className="mt-2 text-sm text-slate-500">
-          Control the website identity, content and every major UI color
+          Control the main website identity, links, content and visual theme
           from one place.
         </p>
       </div>
 
+      {/* BRAND + CONTENT */}
       <section className="grid gap-6 lg:grid-cols-2">
 
-        {/* BRAND */}
         <div className="rounded-[28px] border bg-white p-7 shadow-sm">
 
           <div className="mb-6 flex items-center gap-3">
-            <Globe2 className="text-[var(--primary)]" />
+            <Globe2 className="settings-primary-icon" />
 
             <h2 className="font-black">
               Brand & Content
@@ -120,6 +166,7 @@ export default function AdminSettings({
               ["featuredTitle", "Featured section title"],
               ["searchPlaceholder", "Search placeholder"],
             ].map(([key, label]) => (
+
               <label key={key} className="block">
 
                 <span className="mb-2 block text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -129,10 +176,11 @@ export default function AdminSettings({
                 <input
                   value={form[key] ?? ""}
                   onChange={(e) => set(key, e.target.value)}
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-semibold outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-[color-mix(in_srgb,var(--primary)_10%,transparent)]"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-semibold outline-none transition focus:border-[var(--other-primary)] focus:ring-4 focus:ring-[color-mix(in_srgb,var(--other-primary)_10%,transparent)]"
                 />
 
               </label>
+
             ))}
 
           </div>
@@ -142,11 +190,13 @@ export default function AdminSettings({
         <div className="rounded-[28px] border bg-white p-7 shadow-sm">
 
           <div className="mb-6 flex items-center gap-3">
-            <Share2 className="text-[var(--primary)]" />
+
+            <Share2 className="settings-primary-icon" />
 
             <h2 className="font-black">
               Social Links
             </h2>
+
           </div>
 
           <div className="space-y-4">
@@ -156,6 +206,7 @@ export default function AdminSettings({
               ["youtubeUrl", "YouTube channel URL"],
               ["instagramUrl", "Instagram URL"],
             ].map(([key, label]) => (
+
               <label key={key} className="block">
 
                 <span className="mb-2 block text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -166,199 +217,246 @@ export default function AdminSettings({
                   value={form[key] ?? ""}
                   onChange={(e) => set(key, e.target.value)}
                   placeholder="https://..."
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-semibold outline-none transition focus:border-[var(--primary)]"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-semibold outline-none transition focus:border-[var(--other-primary)]"
                 />
 
               </label>
+
             ))}
 
           </div>
         </div>
 
-        {/* VISUAL THEME */}
-        <div className="rounded-[28px] border bg-white p-7 shadow-sm lg:col-span-2">
+      </section>
 
-          <div className="mb-6 flex items-center gap-3">
-            <Palette className="text-[var(--primary)]" />
+      {/* BASIC COLORS */}
+      <section className="rounded-[28px] border bg-white p-7 shadow-sm">
 
-            <div>
-              <h2 className="font-black">
-                Visual Theme
-              </h2>
+        <div className="mb-6 flex items-center gap-3">
 
-              <p className="mt-1 text-xs text-slate-400">
-                Change each website color independently.
-              </p>
-            </div>
-          </div>
+          <Palette className="settings-primary-icon" />
 
-          {/* GENERAL COLORS */}
-          <div className="mb-8">
-
-            <h3 className="mb-4 text-xs font-black uppercase tracking-widest text-slate-400">
-              General Colors
-            </h3>
-
-            <div className="grid gap-5 sm:grid-cols-3">
-
-              {[
-                ["primaryColor", "Base Primary Color"],
-                ["accentColor", "Dark Accent"],
-                ["backgroundColor", "Background"],
-              ].map(([key, label]) => (
-
-                <label
-                  key={key}
-                  className="flex items-center gap-3 rounded-2xl border bg-slate-50 p-3"
-                >
-
-                  <input
-                    type="color"
-                    value={form[key]}
-                    onChange={(e) => set(key, e.target.value)}
-                    className="h-12 w-14 cursor-pointer rounded-xl border-0 bg-transparent"
-                  />
-
-                  <div>
-                    <div className="text-xs font-black uppercase">
-                      {label}
-                    </div>
-
-                    <div className="text-xs text-slate-400">
-                      {form[key]}
-                    </div>
-                  </div>
-
-                </label>
-
-              ))}
-
-            </div>
-          </div>
-
-          {/* INDIVIDUAL COLORS */}
           <div>
+            <h2 className="font-black">
+              Main Theme
+            </h2>
 
-            <h3 className="mb-4 text-xs font-black uppercase tracking-widest text-slate-400">
-              Individual UI Colors
-            </h3>
-
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-
-              {colorSettings.map(([key, label]) => (
-
-                <label
-                  key={key}
-                  className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 transition hover:border-slate-300 hover:bg-white"
-                >
-
-                  <input
-                    type="color"
-                    value={form[key]}
-                    onChange={(e) => set(key, e.target.value)}
-                    className="h-12 w-14 cursor-pointer rounded-xl border-0 bg-transparent"
-                  />
-
-                  <div className="min-w-0">
-
-                    <div className="text-[11px] font-black uppercase leading-tight">
-                      {label}
-                    </div>
-
-                    <div className="mt-1 text-xs font-semibold text-slate-400">
-                      {form[key]}
-                    </div>
-
-                  </div>
-
-                </label>
-
-              ))}
-
-            </div>
+            <p className="text-xs text-slate-400">
+              Main website colors
+            </p>
           </div>
 
-          {/* COLOR PREVIEW */}
-          <div className="mt-8 rounded-3xl border border-slate-200 bg-slate-50 p-5">
+        </div>
 
-            <div className="mb-4 text-xs font-black uppercase tracking-widest text-slate-400">
-              Live Color Preview
-            </div>
+        <div className="grid gap-5 sm:grid-cols-3">
 
-            <div className="flex flex-wrap gap-3">
+          {[
+            ["primaryColor", "Primary color"],
+            ["accentColor", "Dark accent"],
+            ["backgroundColor", "Background"],
+          ].map(([key, label]) => (
 
-              <button
-                type="button"
-                style={{ backgroundColor: form.viewDealColor }}
-                className="rounded-xl px-5 py-3 text-xs font-black text-white shadow-lg"
-              >
-                View Deal
-              </button>
+            <label
+              key={key}
+              className="flex items-center gap-3 rounded-2xl border bg-slate-50 p-3"
+            >
 
-              <button
-                type="button"
-                style={{ backgroundColor: form.categorySelectedColor }}
-                className="rounded-xl px-5 py-3 text-xs font-black text-white shadow-lg"
-              >
-                Category
-              </button>
+              <input
+                type="color"
+                value={form[key]}
+                onChange={(e) => set(key, e.target.value)}
+                className="h-12 w-14 cursor-pointer rounded-xl border-0 bg-transparent"
+              />
 
-              <button
-                type="button"
-                style={{ backgroundColor: form.sortSelectedColor }}
-                className="rounded-xl px-5 py-3 text-xs font-black text-white shadow-lg"
-              >
-                Sort Selected
-              </button>
+              <div>
 
-              <button
-                type="button"
-                style={{ backgroundColor: form.headerCtaColor }}
-                className="rounded-xl px-5 py-3 text-xs font-black text-white shadow-lg"
-              >
-                Header CTA
-              </button>
+                <div className="text-xs font-black uppercase">
+                  {label}
+                </div>
 
-              <button
-                type="button"
-                style={{ backgroundColor: form.footerActionColor }}
-                className="rounded-xl px-5 py-3 text-xs font-black text-white shadow-lg"
-              >
-                Footer Action
-              </button>
+                <div className="text-xs text-slate-400">
+                  {form[key]}
+                </div>
 
-              <button
-                type="button"
-                style={{ backgroundColor: form.primaryButtonColor }}
-                className="rounded-xl px-5 py-3 text-xs font-black text-white shadow-lg"
-              >
-                Primary
-              </button>
-
-            </div>
-          </div>
-
-          {/* ANIMATION */}
-          <div className="mt-6">
-
-            <label className="block">
-
-              <span className="mb-2 block text-[10px] font-black uppercase tracking-widest text-slate-400">
-                Animation preset
-              </span>
-
-              <select
-                value={form.animation}
-                onChange={(e) => set("animation", e.target.value)}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 font-bold outline-none transition focus:border-[var(--primary)]"
-              >
-                <option value="smooth">Smooth</option>
-                <option value="minimal">Minimal</option>
-                <option value="energetic">Energetic</option>
-                <option value="none">No animation</option>
-              </select>
+              </div>
 
             </label>
+
+          ))}
+
+        </div>
+
+      </section>
+
+      {/* NEW UI COLOR CONTROL */}
+      <section className="rounded-[28px] border bg-white p-7 shadow-sm">
+
+        <div className="mb-7 flex items-start gap-3">
+
+          <MousePointer2 className="settings-primary-icon mt-0.5" />
+
+          <div>
+
+            <h2 className="text-xl font-black">
+              Button & UI Colors
+            </h2>
+
+            <p className="mt-1 text-sm text-slate-500">
+              Change each website UI color separately.
+              Changing one color will not change the others.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+
+          {uiColors.map((item) => (
+
+            <div
+              key={item.key}
+              className="group rounded-[22px] border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+
+              <div className="flex items-center justify-between gap-4">
+
+                <div className="min-w-0">
+
+                  <div className="flex items-center gap-2">
+
+                    <div
+                      className="h-3 w-3 rounded-full border border-white shadow-sm"
+                      style={{
+                        backgroundColor:
+                          form[item.key] || "#2563eb",
+                      }}
+                    />
+
+                    <div className="text-sm font-black text-slate-900">
+                      {item.label}
+                    </div>
+
+                  </div>
+
+                  <div className="mt-1 text-[11px] leading-4 text-slate-400">
+                    {item.description}
+                  </div>
+
+                </div>
+
+                <input
+                  type="color"
+                  value={form[item.key] || "#2563eb"}
+                  onChange={(e) => set(item.key, e.target.value)}
+                  title={`${item.label} color`}
+                  className="h-12 w-14 shrink-0 cursor-pointer rounded-xl border border-slate-200 bg-white p-1 shadow-sm"
+                />
+
+              </div>
+
+              <div className="mt-3 flex items-center gap-2">
+
+                <input
+                  type="text"
+                  value={form[item.key] || "#2563eb"}
+                  onChange={(e) => set(item.key, e.target.value)}
+                  className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold uppercase outline-none focus:border-[var(--other-primary)]"
+                />
+
+                <div
+                  className="h-8 w-8 shrink-0 rounded-lg shadow-inner"
+                  style={{
+                    backgroundColor:
+                      form[item.key] || "#2563eb",
+                  }}
+                />
+
+              </div>
+
+            </div>
+
+          ))}
+
+        </div>
+
+        {/* LIVE PREVIEW */}
+        <div className="mt-7 rounded-[24px] border border-dashed border-slate-300 bg-slate-50 p-5">
+
+          <div className="mb-4 flex items-center gap-2">
+
+            <SlidersHorizontal
+              size={16}
+              className="text-slate-400"
+            />
+
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+              Live Preview
+            </span>
+
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+
+            <button
+              type="button"
+              style={{
+                backgroundColor: form.viewDealColor,
+              }}
+              className="rounded-xl px-5 py-3 text-xs font-black uppercase tracking-wider text-white shadow-sm"
+            >
+              View Deal
+            </button>
+
+            <button
+              type="button"
+              style={{
+                backgroundColor: form.categorySelectedColor,
+              }}
+              className="rounded-xl px-5 py-3 text-xs font-black uppercase tracking-wider text-white shadow-sm"
+            >
+              Selected Category
+            </button>
+
+            <button
+              type="button"
+              style={{
+                backgroundColor: form.sortSelectedColor,
+              }}
+              className="rounded-xl px-5 py-3 text-xs font-black uppercase tracking-wider text-white shadow-sm"
+            >
+              Selected Sort
+            </button>
+
+            <button
+              type="button"
+              style={{
+                backgroundColor: form.headerCtaColor,
+              }}
+              className="rounded-xl px-5 py-3 text-xs font-black uppercase tracking-wider text-white shadow-sm"
+            >
+              Header CTA
+            </button>
+
+            <button
+              type="button"
+              style={{
+                backgroundColor: form.footerActionColor,
+              }}
+              className="rounded-xl px-5 py-3 text-xs font-black uppercase tracking-wider text-white shadow-sm"
+            >
+              Footer Action
+            </button>
+
+            <button
+              type="button"
+              style={{
+                backgroundColor: form.otherPrimaryColor,
+              }}
+              className="rounded-xl px-5 py-3 text-xs font-black uppercase tracking-wider text-white shadow-sm"
+            >
+              Primary
+            </button>
 
           </div>
 
@@ -366,12 +464,59 @@ export default function AdminSettings({
 
       </section>
 
+      {/* ANIMATION */}
+      <section className="rounded-[28px] border bg-white p-7 shadow-sm">
+
+        <div className="mb-5 flex items-center gap-3">
+
+          <Sparkles className="settings-primary-icon" />
+
+          <h2 className="font-black">
+            Animation
+          </h2>
+
+        </div>
+
+        <label className="block">
+
+          <span className="mb-2 block text-[10px] font-black uppercase tracking-widest text-slate-400">
+            Animation preset
+          </span>
+
+          <select
+            value={form.animation}
+            onChange={(e) => set("animation", e.target.value)}
+            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 font-bold outline-none focus:border-[var(--other-primary)]"
+          >
+            <option value="smooth">
+              Smooth
+            </option>
+
+            <option value="minimal">
+              Minimal
+            </option>
+
+            <option value="energetic">
+              Energetic
+            </option>
+
+            <option value="none">
+              No animation
+            </option>
+
+          </select>
+
+        </label>
+
+      </section>
+
       {/* SAVE */}
       <button
         disabled={saving}
         onClick={save}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--primary)] py-4 font-black uppercase tracking-widest text-white shadow-xl transition hover:brightness-90 disabled:opacity-50"
+        className="settings-save-button flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-black uppercase tracking-widest text-white shadow-xl transition hover:-translate-y-0.5 disabled:opacity-50"
       >
+
         <Save size={18} />
 
         {saving
@@ -379,6 +524,7 @@ export default function AdminSettings({
           : saved
             ? "Saved ✓"
             : "Save Everything"}
+
       </button>
 
     </div>
