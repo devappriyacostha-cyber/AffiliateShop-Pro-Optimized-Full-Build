@@ -28,7 +28,6 @@ export default function HomeFilters({
 }) {
 
   const router = useRouter();
-
   const searchParams =
     useSearchParams();
 
@@ -65,26 +64,23 @@ export default function HomeFilters({
     },
   ];
 
-  const updateSort = (v: string) => {
+  const updateSort = (
+    value: string
+  ) => {
 
     const p =
       new URLSearchParams(
         searchParams.toString()
       );
 
-    if (v === "newest") {
+    if (value === "newest") {
       p.delete("sort");
     } else {
-      p.set("sort", v);
+      p.set("sort", value);
     }
 
-    const query =
-      p.toString();
-
     router.push(
-      query
-        ? `/?${query}`
-        : "/",
+      `/?${p.toString()}`,
       {
         scroll: false,
       }
@@ -124,59 +120,28 @@ export default function HomeFilters({
   }, []);
 
   return (
-
-    <div
-      className="
-        mb-10
-        space-y-8
-      "
-    >
+    <div className="mb-10 space-y-8">
 
       {/* TITLE + SORT */}
-
-      <div
-        className="
-          flex
-          flex-col
-          gap-6
-          md:flex-row
-          md:items-end
-          md:justify-between
-        "
-      >
+      <div className="flex flex-col md:flex-row justify-between md:items-end gap-6">
 
         <div>
 
-          <h2
-            className="
-              text-3xl
-              font-[1000]
-              tracking-tighter
-              text-slate-900
-              uppercase
-              italic
-            "
-          >
+          <h2 className="text-3xl font-[1000] text-slate-900 tracking-tighter uppercase italic">
             {title}
           </h2>
 
           <div
-            className="
-              mt-2
-              h-1.5
-              w-16
-              rounded-full
-            "
+            className="mt-2 h-1.5 w-16 rounded-full"
             style={{
               backgroundColor:
-                "var(--primary)",
+                "var(--other-primary)",
             }}
           />
 
         </div>
 
         {/* SORT */}
-
         <div
           className="relative"
           ref={dropRef}
@@ -187,51 +152,32 @@ export default function HomeFilters({
               setIsOpen(!isOpen)
             }
             className="
-              flex
-              w-full
-              items-center
-              justify-between
-              rounded-2xl
-              border
-              border-slate-200
+              w-full md:w-64
+              flex items-center justify-between
               bg-white
-              px-6
-              py-3.5
+              border border-slate-200
+              px-6 py-3.5
+              rounded-2xl
               shadow-sm
               transition-all
-              md:w-64
-              hover:border-[var(--hover)]
             "
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor =
+                "var(--hover)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor =
+                "#e2e8f0";
+            }}
           >
 
-            <div
-              className="
-                flex
-                flex-col
-                items-start
-                leading-tight
-              "
-            >
+            <div className="flex flex-col items-start leading-tight">
 
-              <span
-                className="
-                  mb-0.5
-                  text-[9px]
-                  font-black
-                  uppercase
-                  text-slate-400
-                "
-              >
+              <span className="text-[9px] font-black uppercase text-slate-400 mb-0.5">
                 Sort Results
               </span>
 
-              <span
-                className="
-                  text-sm
-                  font-bold
-                  text-slate-800
-                "
-              >
+              <span className="text-sm font-bold text-slate-800">
                 {
                   options.find(
                     (o) =>
@@ -245,99 +191,113 @@ export default function HomeFilters({
             <ChevronDown
               size={18}
               className={`
+                text-slate-400
                 transition-transform
-                ${isOpen
-                  ? "rotate-180"
-                  : ""
-                }
+                ${isOpen ? "rotate-180" : ""}
               `}
-              style={{
-                color:
-                  "var(--hover)",
-              }}
             />
 
           </button>
 
+          {/* SORT DROPDOWN */}
           {isOpen && (
 
-            <div
-              className="
-                absolute
-                right-0
-                top-[110%]
-                z-[100]
-                w-full
-                rounded-2xl
-                border
-                border-slate-100
-                bg-white
-                p-2
-                shadow-2xl
-                animate-in
-                fade-in
-                slide-in-from-top-2
-              "
-            >
+            <div className="
+              absolute
+              top-[110%]
+              right-0
+              w-full
+              bg-white
+              border border-slate-100
+              rounded-2xl
+              shadow-2xl
+              z-[100]
+              p-2
+              animate-in
+              fade-in
+              slide-in-from-top-2
+            ">
 
-              {options.map((o) => {
+              {options.map(
+                (option) => {
 
-                const selected =
-                  sortOrder === o.v;
+                  const selected =
+                    sortOrder ===
+                    option.v;
 
-                return (
+                  return (
 
-                  <button
-                    key={o.v}
-                    onClick={() =>
-                      updateSort(o.v)
-                    }
-                    className="
-                      flex
-                      w-full
-                      items-center
-                      justify-between
-                      rounded-xl
-                      px-4
-                      py-3
-                      text-xs
-                      font-bold
-                      uppercase
-                      tracking-wider
-                      transition
-                    "
-                    style={
-                      selected
-                        ? {
-                            backgroundColor:
-                              "color-mix(in srgb, var(--sort-selected) 10%, white)",
-                            color:
-                              "var(--sort-selected)",
-                          }
-                        : undefined
-                    }
-                  >
-
-                    <span
-                      className={
-                        selected
-                          ? ""
-                          : "text-slate-600 hover:text-[var(--hover)]"
+                    <button
+                      key={option.v}
+                      onClick={() =>
+                        updateSort(
+                          option.v
+                        )
                       }
+                      className="
+                        w-full
+                        flex items-center
+                        justify-between
+                        px-4 py-3
+                        rounded-xl
+                        font-bold
+                        text-xs
+                        uppercase
+                        tracking-wider
+                        transition-all
+                      "
+                      style={
+                        selected
+                          ? {
+                              backgroundColor:
+                                "color-mix(in srgb, var(--sort-selected) 10%, white)",
+                              color:
+                                "var(--sort-selected)",
+                            }
+                          : undefined
+                      }
+                      onMouseEnter={(e) => {
+
+                        if (!selected) {
+
+                          e.currentTarget.style.backgroundColor =
+                            "color-mix(in srgb, var(--hover) 8%, white)";
+
+                          e.currentTarget.style.color =
+                            "var(--hover)";
+
+                        }
+
+                      }}
+                      onMouseLeave={(e) => {
+
+                        if (!selected) {
+
+                          e.currentTarget.style.backgroundColor =
+                            "";
+
+                          e.currentTarget.style.color =
+                            "";
+
+                        }
+
+                      }}
                     >
-                      {o.l}
-                    </span>
 
-                    {selected && (
-                      <Check
-                        size={14}
-                      />
-                    )}
+                      {option.l}
 
-                  </button>
+                      {selected && (
+                        <Check
+                          size={14}
+                        />
+                      )}
 
-                );
-              })}
+                    </button>
+
+                  );
+
+                }
+              )}
 
             </div>
 
@@ -348,47 +308,67 @@ export default function HomeFilters({
       </div>
 
       {/* CATEGORIES */}
-
-      <div
-        className="
-          flex
-          gap-2
-          overflow-x-auto
-          pb-2
-          no-scrollbar
-        "
-      >
+      <div className="
+        flex gap-2
+        overflow-x-auto
+        pb-2
+        no-scrollbar
+      ">
 
         {/* ALL */}
-
         <Link
           href="/"
           className="
-            flex
-            items-center
-            gap-2
-            whitespace-nowrap
+            flex items-center gap-2
+            px-8 py-3.5
             rounded-xl
-            border
-            px-8
-            py-3.5
             text-[10px]
             font-black
             uppercase
             tracking-widest
+            border
             transition-all
+            whitespace-nowrap
           "
           style={
             selectedCat === "all"
               ? {
                   backgroundColor:
                     "var(--category-selected)",
+                  color: "#fff",
                   borderColor:
                     "var(--category-selected)",
-                  color: "#fff",
+                  boxShadow:
+                    "0 12px 25px color-mix(in srgb, var(--category-selected) 20%, transparent)",
                 }
               : undefined
           }
+          onMouseEnter={(e) => {
+
+            if (selectedCat !== "all") {
+
+              e.currentTarget.style.borderColor =
+                "var(--hover)";
+
+              e.currentTarget.style.color =
+                "var(--hover)";
+
+            }
+
+          }}
+          onMouseLeave={(e) => {
+
+            if (selectedCat !== "all") {
+
+              e.currentTarget.style.borderColor =
+                "#e2e8f0";
+
+              e.currentTarget.style.color =
+                "#64748b";
+
+            }
+
+          }}
         >
 
           <LayoutGrid
@@ -400,49 +380,78 @@ export default function HomeFilters({
         </Link>
 
         {/* CATEGORIES */}
+        {categories.map(
+          (category) => {
 
-        {categories.map((c) => {
+            const selected =
+              selectedCat ===
+              category.slug;
 
-          const selected =
-            selectedCat === c.slug;
+            return (
 
-          return (
+              <Link
+                key={category.id}
+                href={`/?category=${category.slug}`}
+                className="
+                  px-8 py-3.5
+                  rounded-xl
+                  text-[10px]
+                  font-black
+                  uppercase
+                  tracking-widest
+                  border
+                  transition-all
+                  whitespace-nowrap
+                "
+                style={
+                  selected
+                    ? {
+                        backgroundColor:
+                          "var(--category-selected)",
+                        color: "#fff",
+                        borderColor:
+                          "var(--category-selected)",
+                        boxShadow:
+                          "0 12px 25px color-mix(in srgb, var(--category-selected) 20%, transparent)",
+                      }
+                    : undefined
+                }
+                onMouseEnter={(e) => {
 
-            <Link
-              key={c.id}
-              href={`/?category=${c.slug}`}
-              className="
-                whitespace-nowrap
-                rounded-xl
-                border
-                px-8
-                py-3.5
-                text-[10px]
-                font-black
-                uppercase
-                tracking-widest
-                transition-all
-              "
-              style={
-                selected
-                  ? {
-                      backgroundColor:
-                        "var(--category-selected)",
-                      borderColor:
-                        "var(--category-selected)",
-                      color: "#fff",
-                    }
-                  : undefined
-              }
-            >
+                  if (!selected) {
 
-              {c.name}
+                    e.currentTarget.style.borderColor =
+                      "var(--hover)";
 
-            </Link>
+                    e.currentTarget.style.color =
+                      "var(--hover)";
 
-          );
+                  }
 
-        })}
+                }}
+                onMouseLeave={(e) => {
+
+                  if (!selected) {
+
+                    e.currentTarget.style.borderColor =
+                      "#e2e8f0";
+
+                    e.currentTarget.style.color =
+                      "#64748b";
+
+                  }
+
+                }}
+              >
+
+                {category.name}
+
+              </Link>
+
+            );
+
+          }
+        )}
 
       </div>
 
